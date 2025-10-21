@@ -1,2 +1,2 @@
 # glowing-eureka
-Livelink customer interface
+API Interface to Cognos Analytics.
