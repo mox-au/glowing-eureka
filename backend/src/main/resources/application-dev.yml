@@ -1,0 +1,11 @@
+spring:
+  jpa:
+    show-sql: true
+  devtools:
+    restart:
+      enabled: true
+
+logging:
+  level:
+    com.pronto.cognosportal: DEBUG
+    org.springframework.security: DEBUG

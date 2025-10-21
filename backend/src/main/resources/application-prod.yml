@@ -1,0 +1,14 @@
+spring:
+  jpa:
+    show-sql: false
+
+logging:
+  level:
+    com.pronto.cognosportal: INFO
+    org.springframework.web: WARN
+    org.springframework.security: WARN
+
+server:
+  error:
+    include-message: never
+    include-stacktrace: never
