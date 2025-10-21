@@ -11,6 +11,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class CognosPortalApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(CognosPortalApplication.java, args);
+        SpringApplication.run(CognosPortalApplication.class, args);
     }
 }
