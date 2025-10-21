@@ -5,6 +5,12 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 3000,
+    host: '0.0.0.0',
+    allowedHosts: [
+      'localhost',
+      'dev.test-nook.com',
+      '.test-nook.com'  // This allows any subdomain of test-nook.com
+    ],
     proxy: {
       '/api': {
         target: 'http://localhost:8080',
