@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Layout, Menu } from 'antd';
 import {
   DashboardOutlined,
-  ServerOutlined,
+  DatabaseOutlined,
   UserOutlined,
   AuditOutlined,
   ThunderboltOutlined,
@@ -28,7 +28,7 @@ const AppLayout = () => {
     },
     {
       key: '/servers',
-      icon: <ServerOutlined />,
+      icon: <DatabaseOutlined />,
       label: 'Servers',
     },
     {
