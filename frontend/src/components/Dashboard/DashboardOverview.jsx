@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Row, Col, Card, Statistic, Spin, message } from 'antd';
-import { ServerOutlined, CheckCircleOutlined, CloseCircleOutlined, ClockCircleOutlined } from '@ant-design/icons';
+import { DatabaseOutlined, CheckCircleOutlined, CloseCircleOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import serverService from '../../services/serverService';
 
 const DashboardOverview = () => {
@@ -43,7 +43,7 @@ const DashboardOverview = () => {
             <Statistic
               title="Total Servers"
               value={stats.total}
-              prefix={<ServerOutlined />}
+              prefix={<DatabaseOutlined />}
             />
           </Card>
         </Col>
