@@ -7,6 +7,7 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.util.Base64;
 
@@ -19,6 +20,18 @@ public class EncryptionService {
     private static final String ALGORITHM = "AES/CBC/PKCS5Padding";
     private static final String KEY_ALGORITHM = "AES";
 
+    /**
+     * Derives a 32-byte key from the encryption key using SHA-256
+     */
+    private byte[] deriveKey() {
+        try {
+            MessageDigest sha = MessageDigest.getInstance("SHA-256");
+            return sha.digest(encryptionKey.getBytes(StandardCharsets.UTF_8));
+        } catch (Exception e) {
+            throw new RuntimeException("Error deriving encryption key", e);
+        }
+    }
+
     public String encrypt(String plainText) {
         try {
             // Generate random IV
@@ -27,11 +40,8 @@ public class EncryptionService {
             random.nextBytes(iv);
             IvParameterSpec ivSpec = new IvParameterSpec(iv);
 
-            // Create key
-            SecretKeySpec keySpec = new SecretKeySpec(
-                    encryptionKey.substring(0, 32).getBytes(StandardCharsets.UTF_8),
-                    KEY_ALGORITHM
-            );
+            // Create key using SHA-256 hash of encryption key
+            SecretKeySpec keySpec = new SecretKeySpec(deriveKey(), KEY_ALGORITHM);
 
             // Encrypt
             Cipher cipher = Cipher.getInstance(ALGORITHM);
@@ -62,11 +72,8 @@ public class EncryptionService {
             byte[] encrypted = new byte[combined.length - 16];
             System.arraycopy(combined, 16, encrypted, 0, encrypted.length);
 
-            // Create key
-            SecretKeySpec keySpec = new SecretKeySpec(
-                    encryptionKey.substring(0, 32).getBytes(StandardCharsets.UTF_8),
-                    KEY_ALGORITHM
-            );
+            // Create key using SHA-256 hash of encryption key
+            SecretKeySpec keySpec = new SecretKeySpec(deriveKey(), KEY_ALGORITHM);
 
             // Decrypt
             Cipher cipher = Cipher.getInstance(ALGORITHM);
