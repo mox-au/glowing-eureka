@@ -2,6 +2,7 @@ package com.pronto.cognosportal.service;
 
 import com.pronto.cognosportal.dto.ServerDTO;
 import com.pronto.cognosportal.dto.ServerEnrollmentRequest;
+import com.pronto.cognosportal.dto.ServerUpdateRequest;
 import com.pronto.cognosportal.model.CognosServer;
 import com.pronto.cognosportal.model.User;
 import com.pronto.cognosportal.repository.CognosServerRepository;
@@ -69,6 +70,36 @@ public class ServerService {
                 currentUser != null ? currentUser.getUsername() : "unknown");
 
         auditService.logSuccess(currentUser, "SERVER_ENROLLED", "SERVER", server.getId(),
+                null, null);
+
+        return ServerDTO.fromEntity(server);
+    }
+
+    @Transactional
+    public ServerDTO updateServer(Long id, ServerUpdateRequest request) {
+        CognosServer server = serverRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Server not found"));
+
+        User currentUser = authService.getCurrentUser();
+
+        // Update fields
+        server.setServerName(request.getServerName());
+        server.setBaseUrl(request.getBaseUrl());
+        server.setProntoDebtorCode(request.getProntoDebtorCode());
+        server.setProntoXiVersion(request.getProntoXiVersion());
+
+        // Update API key only if provided
+        if (request.getApiKey() != null && !request.getApiKey().isEmpty()) {
+            String encryptedApiKey = encryptionService.encrypt(request.getApiKey());
+            server.setApiKeyEncrypted(encryptedApiKey);
+        }
+
+        server = serverRepository.save(server);
+
+        log.info("Server updated: {} by {}", server.getServerName(),
+                currentUser != null ? currentUser.getUsername() : "unknown");
+
+        auditService.logSuccess(currentUser, "SERVER_UPDATED", "SERVER", server.getId(),
                 null, null);
 
         return ServerDTO.fromEntity(server);
