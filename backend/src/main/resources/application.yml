@@ -37,6 +37,10 @@ polling:
     max-pool-size: 20
     queue-capacity: 100
 
+cognos:
+  api:
+    demo-mode: true  # Set to false when connecting to real Cognos servers
+
 logging:
   level:
     com.pronto.cognosportal: INFO

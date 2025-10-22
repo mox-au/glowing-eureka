@@ -3,11 +3,14 @@ package com.pronto.cognosportal.service;
 import com.pronto.cognosportal.model.CognosServer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -17,6 +20,9 @@ public class CognosApiService {
 
     private final RestTemplate restTemplate = new RestTemplate();
     private final EncryptionService encryptionService;
+
+    @Value("${cognos.api.demo-mode:true}")
+    private boolean demoMode;
 
     /**
      * Test connectivity to Cognos server
@@ -45,6 +51,13 @@ public class CognosApiService {
      * IBM Cognos Analytics 12.0 REST API documentation
      */
     public Map<String, Object> getContentInventory(CognosServer server) {
+        // Demo mode - return mock data for testing
+        if (demoMode) {
+            log.info("Demo mode: Returning mock data for server {}", server.getServerName());
+            return getMockContentInventory();
+        }
+
+        // Real mode - attempt to connect to actual Cognos server
         try {
             String apiKey = encryptionService.decrypt(server.getApiKeyEncrypted());
             HttpHeaders headers = createHeaders(apiKey);
@@ -62,6 +75,43 @@ public class CognosApiService {
                     server.getServerName(), e.getMessage());
             throw new RuntimeException("Failed to fetch content inventory", e);
         }
+    }
+
+    /**
+     * Returns mock data for demo/testing purposes
+     */
+    private Map<String, Object> getMockContentInventory() {
+        Map<String, Object> inventory = new HashMap<>();
+
+        // Mock reports
+        List<Map<String, String>> reports = new ArrayList<>();
+        reports.add(createMockContent("Sales Report Q4", "1.2.0", "/Reports/Sales"));
+        reports.add(createMockContent("Financial Overview", "2.1.0", "/Reports/Finance"));
+        reports.add(createMockContent("Customer Analytics", "1.0.5", "/Reports/Analytics"));
+
+        // Mock dashboards
+        List<Map<String, String>> dashboards = new ArrayList<>();
+        dashboards.add(createMockContent("Executive Dashboard", "3.0.0", "/Dashboards/Executive"));
+        dashboards.add(createMockContent("Operations Dashboard", "2.5.1", "/Dashboards/Ops"));
+
+        // Mock data modules
+        List<Map<String, String>> dataModules = new ArrayList<>();
+        dataModules.add(createMockContent("Sales Data", "1.1.0", "/Data/Sales"));
+        dataModules.add(createMockContent("Customer Data", "1.3.2", "/Data/Customer"));
+
+        inventory.put("reports", reports);
+        inventory.put("dashboards", dashboards);
+        inventory.put("dataModules", dataModules);
+
+        return inventory;
+    }
+
+    private Map<String, String> createMockContent(String name, String version, String path) {
+        Map<String, String> content = new HashMap<>();
+        content.put("name", name);
+        content.put("version", version);
+        content.put("path", path);
+        return content;
     }
 
     /**
