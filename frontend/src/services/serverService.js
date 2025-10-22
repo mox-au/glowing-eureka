@@ -21,6 +21,11 @@ const serverService = {
     return response.data;
   },
 
+  updateServer: async (id, serverData) => {
+    const response = await api.put(`/servers/${id}`, serverData);
+    return response.data;
+  },
+
   deleteServer: async (id) => {
     const response = await api.delete(`/servers/${id}`);
     return response.data;

@@ -2,6 +2,7 @@ package com.pronto.cognosportal.controller;
 
 import com.pronto.cognosportal.dto.ServerDTO;
 import com.pronto.cognosportal.dto.ServerEnrollmentRequest;
+import com.pronto.cognosportal.dto.ServerUpdateRequest;
 import com.pronto.cognosportal.service.PollingService;
 import com.pronto.cognosportal.service.ServerService;
 import jakarta.validation.Valid;
@@ -40,6 +41,13 @@ public class ServerController {
     public ResponseEntity<ServerDTO> enrollServer(@Valid @RequestBody ServerEnrollmentRequest request) {
         ServerDTO server = serverService.enrollServer(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(server);
+    }
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ServerDTO> updateServer(@PathVariable Long id, @Valid @RequestBody ServerUpdateRequest request) {
+        ServerDTO server = serverService.updateServer(id, request);
+        return ResponseEntity.ok(server);
     }
 
     @DeleteMapping("/{id}")
