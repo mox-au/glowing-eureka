@@ -7,6 +7,7 @@ import AppLayout from './components/Layout/AppLayout';
 import DashboardOverview from './components/Dashboard/DashboardOverview';
 import ServerList from './components/Servers/ServerList';
 import ServerEnrollmentForm from './components/Servers/ServerEnrollmentForm';
+import ServerDetail from './components/Servers/ServerDetail';
 
 const PrivateRoute = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
@@ -43,6 +44,7 @@ const App = () => {
               <Route path="dashboard" element={<DashboardOverview />} />
               <Route path="servers" element={<ServerList />} />
               <Route path="servers/enroll" element={<ServerEnrollmentForm />} />
+              <Route path="servers/:id" element={<ServerDetail />} />
               <Route path="bulk-operations" element={<div>Bulk Operations (Coming Soon)</div>} />
               <Route path="reports" element={<div>Reports (Coming Soon)</div>} />
               <Route path="users" element={<div>User Management (Coming Soon)</div>} />
